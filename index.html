@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Perfiles para hoja de vida</title>
+    <!--Hojas de estilo-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/datatables.min.css">
+    <link rel="stylesheet" href="css/toastr.min.css">
+    <!--FavIcon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="manifest" href="img/site.webmanifest">
+</head>
+
+<body>
+    <div class="container" id="aplicacion">
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="row">
+                    <div class="col-10">
+                        <h5 class="card-title">Información de perfiles para hoja de vida</h5>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-info text-dark float-end" data-bs-toggle="modal"
+                            data-bs-target="#createPersonaModal">
+                            <i class="fa fa-file-o" aria-hidden="true"></i>
+                            Nuevo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-hover table-bordered" id="personas">
+                    <thead>
+                        <tr>
+                            <th scope="col">Acciones</th>
+                            <th scope="col">Identidad</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Nacimiento</th>
+                            <th scope="col">Sexo</th>
+                            <th scope="col">Nacionalidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="persona in personas">
+                            <td scope="row">
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a href="#" class="btn btn-primary" @click="selectPersona(persona)"
+                                        data-bs-toggle="modal" data-bs-target="#EditPersonaModal">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-danger" @click="selectPersona(persona)"
+                                        data-bs-toggle="modal" data-bs-target="#DeletePersonaModal">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                    <a v-bind:href="'perfil.php?id='+persona.id" class="btn btn-warning">
+                                        <i class="fa fa-address-card-o" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>{{persona.identidad}}</td>
+                            <td>{{persona.nombres}}</td>
+                            <td>{{persona.apellidos}}</td>
+                            <td>{{persona.fechanac}}</td>
+                            <td>{{persona.sexo}}</td>
+                            <td>{{persona.nacionalidad}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--CreatePersonaModal-->
+        <div class="modal fade " id="createPersonaModal" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="createPersonaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info">
+                        <h1 class="modal-title fs-5" id="createPersonaModalLabel">Nuevo registro de perfil de persona
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="identidad"
+                                        placeholder="Documento Nacional de Identificación" name="identidad"
+                                        v-model="newPersona.identidad">
+                                    <label for="identidad">Identidad</label>
+                                </div>
+
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nombres"
+                                        placeholder="Nombres de la persona" name="nombres" v-model="newPersona.nombres">
+                                    <label for="nombres">Nombres completos</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="apellidos"
+                                        placeholder="Apellidos de la persona" name="apellidos"
+                                        v-model="newPersona.apellidos">
+                                    <label for="apellidos">Apellidos completos</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" id="fechanac"
+                                        placeholder="FEcha de nacimiento" name="fechanac" v-model="newPersona.fechanac">
+                                    <label for="fechanac">Nacimiento</label>
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="sexo" name="sexo" v-model="newPersona.sexo">
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Masculino">Masculino</option>
+                                    </select>
+                                    <label for="sexo">Sexo</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nacionalidad"
+                                        placeholder="Pais de origen" name="nacionalidad"
+                                        v-model="newPersona.nacionalidad">
+                                    <label for="nacionalidad">Nacionalidad</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="estadocivil" name="estadocivil"
+                                        v-model="newPersona.estadocivil">
+                                        <option value="Soltero">Soltero</option>
+                                        <option value="Union libre">Union libre</option>
+                                        <option value="Casado">Casado</option>
+                                        <option value="Divorciado">Divorciado</option>
+                                        <option value="Viudo">Viudo</option>
+                                    </select>
+                                    <label for="estadocivil">Estado civil</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="casadocon"
+                                        placeholder="Nombre de la pareja" name="casadocon"
+                                        v-model="newPersona.casadocon">
+                                    <label for="casadocon">Nombre de la pareja</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-floating">
+                                <textarea class="form-control"
+                                    placeholder="Escriba un breve resumen con informacion adicional a su hoja de vida"
+                                    id="resumen" name="resumen" v-model="newPersona.resumen"></textarea>
+                                <label for="resumen">Resumen</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-undo" aria-hidden="true"></i>
+                            Cancelar</button>
+                        <button type="button" class="btn btn-info" @click="insertar(newPersona)">
+                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                            Crear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/CreatePersonaModal-->
+        <!--EditPersonaModal-->
+        <div class="modal fade " id="EditPersonaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="EditPersonaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-bg-primary">
+                        <h1 class="modal-title fs-5" id="EditPersonaModalLabel">Editar registro de perfil de persona
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="identidad"
+                                        placeholder="Documento Nacional de Identificación" name="identidad"
+                                        v-model="clickedPersona.identidad">
+                                    <label for="identidad">Identidad</label>
+                                </div>
+
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nombres"
+                                        placeholder="Nombres de la persona" name="nombres"
+                                        v-model="clickedPersona.nombres">
+                                    <label for="nombres">Nombres completos</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="apellidos"
+                                        placeholder="Apellidos de la persona" name="apellidos"
+                                        v-model="clickedPersona.apellidos">
+                                    <label for="apellidos">Apellidos completos</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" id="fechanac"
+                                        placeholder="FEcha de nacimiento" name="fechanac"
+                                        v-model="clickedPersona.fechanac">
+                                    <label for="fechanac">Nacimiento</label>
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="sexo" name="sexo" v-model="clickedPersona.sexo">
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Masculino">Masculino</option>
+                                    </select>
+                                    <label for="sexo">Sexo</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nacionalidad"
+                                        placeholder="Pais de origen" name="nacionalidad"
+                                        v-model="clickedPersona.nacionalidad">
+                                    <label for="nacionalidad">Nacionalidad</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="estadocivil" name="estadocivil"
+                                        v-model="clickedPersona.estadocivil">
+                                        <option value="Soltero">Soltero</option>
+                                        <option value="Union libre">Union libre</option>
+                                        <option value="Casado">Casado</option>
+                                        <option value="Divorciado">Divorciado</option>
+                                        <option value="Viudo">Viudo</option>
+                                    </select>
+                                    <label for="estadocivil">Estado civil</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="casadocon"
+                                        placeholder="Nombre de la pareja" name="casadocon"
+                                        v-model="clickedPersona.casadocon">
+                                    <label for="casadocon">Nombre de la pareja</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-floating">
+                                <textarea class="form-control"
+                                    placeholder="Escriba un breve resumen con informacion adicional a su hoja de vida"
+                                    id="resumen" name="resumen" v-model="clickedPersona.resumen"></textarea>
+                                <label for="resumen">Resumen</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-undo" aria-hidden="true"></i>
+                            Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="actualizar(clickedPersona)">
+                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                            Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/EditPersonaModal-->
+        <!--DeletePersonaModal-->
+        <div class="modal fade " id="DeletePersonaModal" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="DeletePersonaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-bg-danger">
+                        <h1 class="modal-title fs-5" id="DeletePersonaModalLabel">Confirme que desea eliminar el
+                            registro de perfil de persona
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="identidad"
+                                        placeholder="Documento Nacional de Identificación" name="identidad"
+                                        v-model="clickedPersona.identidad" readonly>
+                                    <label for="identidad">Identidad</label>
+                                </div>
+
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nombres"
+                                        placeholder="Nombres de la persona" name="nombres"
+                                        v-model="clickedPersona.nombres" readonly>
+                                    <label for="nombres">Nombres completos</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="apellidos"
+                                        placeholder="Apellidos de la persona" name="apellidos"
+                                        v-model="clickedPersona.apellidos" readonly>
+                                    <label for="apellidos">Apellidos completos</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" id="fechanac"
+                                        placeholder="FEcha de nacimiento" name="fechanac"
+                                        v-model="clickedPersona.fechanac" readonly>
+                                    <label for="fechanac">Nacimiento</label>
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="sexo" name="sexo" v-model="clickedPersona.sexo"
+                                        disabled>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Masculino">Masculino</option>
+                                    </select>
+                                    <label for="sexo">Sexo</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nacionalidad"
+                                        placeholder="Pais de origen" name="nacionalidad"
+                                        v-model="clickedPersona.nacionalidad" readonly>
+                                    <label for="nacionalidad">Nacionalidad</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="estadocivil" name="estadocivil"
+                                        v-model="clickedPersona.estadocivil" disabled>
+                                        <option value="Soltero">Soltero</option>
+                                        <option value="Union libre">Union libre</option>
+                                        <option value="Casado">Casado</option>
+                                        <option value="Divorciado">Divorciado</option>
+                                        <option value="Viudo">Viudo</option>
+                                    </select>
+                                    <label for="estadocivil">Estado civil</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="casadocon"
+                                        placeholder="Nombre de la pareja" name="casadocon"
+                                        v-model="clickedPersona.casadocon" readonly>
+                                    <label for="casadocon">Nombre de la pareja</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-floating">
+                                <textarea class="form-control"
+                                    placeholder="Escriba un breve resumen con informacion adicional a su hoja de vida"
+                                    id="resumen" name="resumen" v-model="clickedPersona.resumen" readonly></textarea>
+                                <label for="resumen">Resumen</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-undo" aria-hidden="true"></i>
+                            Cancelar</button>
+                        <button type="button" class="btn btn-danger" @click="eliminar(clickedPersona)">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            Si, Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/DeletePersonaModal-->
+    </div>
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/datatables.min.js"></script>
+    <script src="js/dataTables.bootstrap5.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/toastr.min.js"></script>
+    <script src="js/appPersonas.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#personas').DataTable();
+        });
+    </script>
+</body>
+
+</html>
